@@ -18,6 +18,17 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	 * functions
 	 *
 	 */
+
+	 /* MEMORY WARNING
+	  * 
+	  * This program is very inefficient with memory as it never destroys 
+	  * any index in either arraylist unless the game is reset. This should
+	  * not be an issue as each index is very small (4 bytes each) and there
+	  * will only be an issue on most computers if someone manages to play the
+	  * game for more than an hour without resetting. Just keep this in mind. 
+	  * I am in the process of finding a more memory efficient solution for 
+	  * managing the list as well.
+	  */
 	
    //create global variables
 	ArrayList<Integer> x = new ArrayList<Integer>();
@@ -48,7 +59,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 		setFocusable(true);
 	    requestFocusInWindow();
 	   
-	    //give intial values to x and y
+	    //give initial values to x and y
 	    x.add((int)((35) * Math.random()));
 	    y.add((int)((30) * Math.random()));
 	}
@@ -176,13 +187,15 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	 public void keyPressed(KeyEvent e) {
 		 if (!gameover) {
 			// if the game isn't over, then whenever a key is pressed assign the correct direction based on the key pressed
-			if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) {
-			 	direction = "up";// W or Up is up
-		 	} else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
+			// the && direction part makes it so you don't instantly kill yourself if you press the button in the opposite direction of movement. 
+			// () are needed around the different key options as &&nds execute before ||rs.
+			if ((e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) && direction != "down") { 
+				direction = "up";
+		 	} else if ((e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT ) && direction != "right") {
 			 	direction = "left"; // A or left is left
-		 	} else if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
+		 	} else if ((e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) && direction != "up") {
 			 	direction = "down"; // S or down is down
-		 	} else if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+		 	} else if ((e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) && direction != "left") {
 			 	direction = "right"; // D or right is right
 		 	}
 		 } 
@@ -198,17 +211,17 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	 
 	//this method resets the game without having to restart the app
     private void reset() {
-		gameover = false; //reset gameover varible
+		gameover = false; //reset gameover variable
 		
 		//clear and redefine empty arrayLists
 		x = new ArrayList<Integer>();
 		y = new ArrayList<Integer>();
 
-		//set the intial location of the snake to a random place
+		//set the initial location of the snake to a random place
 		x.add((int)((35) * Math.random()));
 	    y.add((int)((30) * Math.random()));
 
-		//reset length, score, and direction to starting varibles
+		//reset length, score, and direction to starting variables
 		length = 1;
 		score = 0; 
 		direction = "";
