@@ -35,6 +35,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	//create fonts
 	Font titleFont = new Font("Monospaced", Font.BOLD, 100);
 	Font scoreFont = new Font("Monospaced", Font.PLAIN, 25);
+	Font selectFont = new Font("Monospaced", Font.ITALIC, 20);
 	Font creditFont = new Font("Times New Roman", Font.PLAIN, 20);
 	
 	//create timer
@@ -113,22 +114,19 @@ public class Snake extends JPanel implements KeyListener, ActionListener
        	 //draw score
        	 g.setFont(scoreFont);
        	 g.drawString("Score: " + score, 310, 400);
+
+		 //draw reset button;
+		 g.setFont(selectFont);
+		 g.drawString("Press R to restart", 260, 430);
        	
        	 //draw copyright
-       	 g.setFont(creditFont);
-	         g.drawString("Roshan Kareer © 2025", 550, 785);
+		 g.setFont(creditFont);
+       	 g.drawString("Roshan Kareer © 2025", 550, 785);
         }
     }
 	
 	 @Override
 	 public void actionPerformed(ActionEvent e) {
-		 //check for self collision
-		 for (int i = x.size() - 3; i >= x.size() - length; i--) {
-       	 if(x.get(x.size() - 1) == x.get(i) && y.get(y.size() - 1) == y.get(i)) {
-       		 gameover = true;
-       	 }
-        }
-		
 		 //check what the current direction is and move in that direction by adding a new square to that list
 		 int currx = x.get(x.size() - 1);
 		 int curry = y.get(y.size() - 1); //these two are the current heads
@@ -164,25 +162,62 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 			 gameover = true;
 		 }
 		
+		 //check for self collision
+		for (int i = x.size() - 3; i >= x.size() - length; i--) {
+       	 if(x.get(x.size() - 1) == x.get(i) && y.get(y.size() - 1) == y.get(i)) {
+       		 gameover = true;
+       	 }
+        }
 		 //reset the game board
-		 repaint();
+		repaint();
 	 }
 	
 	 @Override
 	 public void keyPressed(KeyEvent e) {
-		 //check if a key was pressed and assign the correct movement direction based on that key
-		 if(e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) {
-			 direction = "up";// W or Up is up
-		 } else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
-			 direction = "left"; // A or left is left
-		 } else if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
-			 direction = "down"; // S or down is down
-		 } else if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			 direction = "right"; // D or right is right
+		 if (!gameover) {
+			// if the game isn't over, then whenever a key is pressed assign the correct direction based on the key pressed
+			if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) {
+			 	direction = "up";// W or Up is up
+		 	} else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT) {
+			 	direction = "left"; // A or left is left
+		 	} else if (e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) {
+			 	direction = "down"; // S or down is down
+		 	} else if (e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			 	direction = "right"; // D or right is right
+		 	}
+		 } 
+		 
+		 else // if the game is over
+		 {
+			//add an option to reset
+			if(e.getKeyCode() == KeyEvent.VK_R) {
+				reset();
+			}
 		 }
 	 }
-   
-    public static void main(String[] args) {
+	 
+	//this method resets the game without having to restart the app
+    private void reset() {
+		gameover = false; //reset gameover varible
+		
+		//clear and redefine empty arrayLists
+		x = new ArrayList<Integer>();
+		y = new ArrayList<Integer>();
+
+		//set the intial location of the snake to a random place
+		x.add((int)((35) * Math.random()));
+	    y.add((int)((30) * Math.random()));
+
+		//reset length, score, and direction to starting varibles
+		length = 1;
+		score = 0; 
+		direction = "";
+
+		//redraw the game board
+		repaint();
+	}
+
+	public static void main(String[] args) {
         Snake p = new Snake();
         JFrame f = new JFrame();
         f.setSize(755, 840);
