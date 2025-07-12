@@ -161,8 +161,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 			 score++; //add to the score
 			
 			 //respawn apple in a different location
-			 applex = (int)((35) * Math.random());
-			 appley = (int)((30) * Math.random());
+			 setAppleRandomCoords();
 			
 			 //add to snake length
 			 length++;
@@ -183,6 +182,26 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 		repaint();
 	 }
 	
+	 /** spawns the apple at a random point NOT within the snake **/
+	 private void setAppleRandomCoords() {
+		boolean insideSnake; //this variable will be used to end the loop if the apple is not in the snake (no issue) and continue it if it is.
+		do {
+			insideSnake = false; //resets the insideSnake variable. 
+
+			// sets the apple's spawning point to a random coordinate
+			applex = (int)((35) * Math.random());
+			appley = (int)((30) * Math.random());
+
+			//check if its inside the snake by iterating through all of it's coordinates
+			for (int i = x.size() - 1; i >= x.size() - length; i--) {
+				if(applex == x.get(i) && appley == y.get(i)) {
+					insideSnake = true;
+				}
+			}
+
+		} while(insideSnake); // if the spawning point is in the snake then repeat the loop until it isn't
+	}
+
 	 @Override
 	 public void keyPressed(KeyEvent e) {
 		 if (!gameover) {
