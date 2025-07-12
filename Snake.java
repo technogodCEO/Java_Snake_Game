@@ -21,17 +21,6 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	 * functions
 	 *
 	 */
-
-	 /* MEMORY WARNING
-	  * 
-	  * This program is very inefficient with memory as it never destroys 
-	  * any index in either arraylist unless the game is reset. This should
-	  * not be an issue as each index is very small (4 bytes each) and there
-	  * will only be an issue on most computers if someone manages to play the
-	  * game for more than an hour without resetting. Just keep this in mind. 
-	  * I am in the process of finding a more memory efficient solution for 
-	  * managing the list as well.
-	  */
 	
    //create global variables
 	int tickspeed = 100; //controls tickspeed
@@ -43,7 +32,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	
 	int applex = (int)((35) * Math.random());
 	int appley = (int)((30) * Math.random());
-	
+
 	boolean gameover = false;
 	
 	String direction = "";
@@ -98,16 +87,16 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 		g.fillRect(0, 140, 20, 600);
 		g.fillRect(720, 140, 20, 600);
 	
-		//draw snake
-		g.setColor(Color.WHITE);
-	
-		for (int i = x.size() - 1; i >= x.size() - length; i--) {
-			g.fillRect((x.get(i)*20) + 20, (y.get(i)*20) + 140, 20, 20);
-		}
-	
 		//draw apple
 		g.setColor(Color.RED);
 		g.fillRect((applex*20) + 20, (appley*20) + 140, 20, 20);
+
+		//draw snake
+		g.setColor(Color.WHITE);
+
+		for (int i = x.size() - 1; i >= x.size() - length; i--) {
+			g.fillRect((x.get(i)*20) + 20, (y.get(i)*20) + 140, 20, 20);
+		}
 	
 		//run time event to wait until next step
 		time.start();
@@ -143,16 +132,14 @@ public class Snake extends JPanel implements KeyListener, ActionListener
         // runs while the game is not over (like a loop)
         if(!gameover) {
 	        drawGameScreen(g);
-        }
-       
-        else /* if the game is over */ {
+        } else /* if the game is over */ {
 			drawGameOverScreen(g);
         }
     }
 	
-	 @Override
-	 public void actionPerformed(ActionEvent e) {
-		//check what the current direction is and move in that direction by adding a new square to that list
+	/** creates a new list of all the squares of the snake each tick to minimize memory usage  */
+	private void newSnakeList() {
+		// add new position node to old list
 		int currx = x.get(x.size() - 1);
 		int curry = y.get(y.size() - 1); //these two are the current heads
 	
@@ -169,18 +156,34 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 			y.add(curry + 1);
 			x.add(currx);
 		}
-	
+
+		//create temporary lists 
+		ArrayList<Integer> tempx = new ArrayList<Integer>();
+		ArrayList<Integer> tempy = new ArrayList<Integer>();
+
+		//we then add the old positions to the new list via iteration. 
+		for (int i = x.size() - length; i <= x.size() - 1; i++) { // We count up as we want the front of our list to be the front of the snake
+			tempx.add(x.get(i));
+			tempy.add(y.get(i));
+        }
+
+		//finally, we just make the old lists the temp lists
+		x = tempx; 
+		y = tempy;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
 		// check if there is a collision with the apple
 		if (applex == x.get(x.size() - 1) && appley == y.get(y.size() - 1)) {
 			score++; //add to the score
-		
-			//respawn apple in a different location
-			setAppleRandomCoords();
-		
-			//add to snake length
-			length++;
+			setAppleRandomCoords(); //respawn apple in a different location
+			length++; //add to snake length
 		}
-	
+
+		//create new snake
+		newSnakeList();
+
 		//collision detection with walls
 		if (x.get(x.size() - 1) < 0 || x.get(x.size() - 1) > 34 || y.get(y.size() - 1) < 0 || y.get(y.size() - 1) > 29) {
 			gameover = true;
