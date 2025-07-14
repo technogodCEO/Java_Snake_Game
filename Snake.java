@@ -9,6 +9,9 @@ import java.awt.event.*;
 import java.lang.Math;
 import java.util.ArrayList;
 
+//import self made package (SnakeTools)
+import SnakeTools.*;
+
 public class Snake extends JPanel implements KeyListener, ActionListener
 {
 	
@@ -78,7 +81,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	
 		//draw copyright
 		g.setFont(creditFont);
-		g.drawString("Roshan Kareer © 2025", 550, 785);
+		g.drawString("Roshan Kareer © 2025, All rights reserved", 390, 785);
 	
 		//draw borders
 		g.setColor(Color.GREEN);
@@ -119,7 +122,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	
 		//draw copyright
 		g.setFont(creditFont);
-		g.drawString("Roshan Kareer © 2025", 550, 785);
+		g.drawString("Roshan Kareer © 2025, All rights reserved", 390, 785);
 	}
 	
 	//draw graphics
@@ -269,7 +272,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 
 	public static void main(String[] args) {
         Snake p = new Snake();
-        JFrame f = new JFrame();
+        JFrame f = new JFrame("Snake");
         f.setSize(755, 840);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.add(p);
