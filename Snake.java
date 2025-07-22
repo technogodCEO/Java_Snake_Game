@@ -1,6 +1,7 @@
 //import packages for graphics
 import java.awt.*;
 import javax.swing.*;
+import snakeTools.*; /* my package */
 
 //import event package
 import java.awt.event.*;
@@ -8,9 +9,6 @@ import java.awt.event.*;
 //import logical packages
 import java.lang.Math;
 import java.util.ArrayList;
-
-//import self made package (SnakeTools)
-import SnakeTools.*;
 
 public class Snake extends JPanel implements KeyListener, ActionListener
 {
@@ -40,7 +38,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	
 	String direction = "";
 	int score = 0;
-	
+
 	//create fonts
 	Font titleFont = new Font("Monospaced", Font.BOLD, 100);
 	Font scoreFont = new Font("Monospaced", Font.PLAIN, 25);
@@ -204,7 +202,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	 }
 	
 	 /** spawns the apple at a random point NOT within the snake **/
-	 private void setAppleRandomCoords() {
+	private void setAppleRandomCoords() {
 		boolean insideSnake; //this variable will be used to end the loop if the apple is not in the snake (no issue) and continue it if it is.
 		do {
 			insideSnake = false; //resets the insideSnake variable. 
@@ -223,8 +221,8 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 		} while(insideSnake); // if the spawning point is in the snake then repeat the loop until it isn't
 	}
 
-	 @Override
-	 public void keyPressed(KeyEvent e) {
+	@Override
+	public void keyPressed(KeyEvent e) {
 		if (!gameover) {
 			// if the game isn't over, then whenever a key is pressed assign the correct direction based on the key pressed
 			// the && direction part makes it so you don't instantly kill yourself if you press the button in the opposite direction of movement. 
