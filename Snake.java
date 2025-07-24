@@ -10,7 +10,7 @@ import java.awt.event.*;
 import java.lang.Math;
 import java.util.ArrayList;
 
-public class Snake extends JPanel implements KeyListener, ActionListener
+public class Snake extends JPanel implements KeyListener, ActionListener, MouseListener, MouseMotionListener 
 {
 	
 	/* NOTE ON COORDINATE SYSTEM
@@ -39,6 +39,9 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 	String direction = "";
 	int score = 0;
 
+	//declare button
+	ActionButton resetButton = new ActionButton(300, 430, 140, 60, "Reset", () -> {reset();});
+
 	//create fonts
 	Font titleFont = new Font("Monospaced", Font.BOLD, 100);
 	Font scoreFont = new Font("Monospaced", Font.PLAIN, 25);
@@ -54,6 +57,10 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 		addKeyListener(this);
 		setFocusable(true);
 	    requestFocusInWindow();
+
+		//mouse inputs
+		addMouseListener(this);
+		addMouseMotionListener(this);
 	   
 	    //give initial values to x and y
 	    x.add((int)((35) * Math.random()));
@@ -115,8 +122,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 		g.drawString("Score: " + score, 310, 400);
 
 		//draw reset button;
-		g.setFont(selectFont);
-		g.drawString("Press R to restart", 260, 430);
+		resetButton.draw(g, selectFont, Color.GREEN, 3); 
 	
 		//draw copyright
 		g.setFont(creditFont);
@@ -131,11 +137,11 @@ public class Snake extends JPanel implements KeyListener, ActionListener
         setBackground(Color.BLACK); //set bg to black
 		
         // runs while the game is not over (like a loop)
-        if(!gameover) {
-	        drawGameScreen(g);
-        } else /* if the game is over */ {
+		if (!gameover) {
+			drawGameScreen(g);
+		} else {
 			drawGameOverScreen(g);
-        }
+		}
     }
 	
 	/** creates a new list of all the squares of the snake each tick to minimize memory usage  */
@@ -197,8 +203,12 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 			}
         }
 
-		//reset the game board
-		repaint();
+		if (!gameover) {
+			repaint();
+		} else {
+			time.stop();
+			repaint();
+		}
 	 }
 	
 	 /** spawns the apple at a random point NOT within the snake **/
@@ -264,6 +274,9 @@ public class Snake extends JPanel implements KeyListener, ActionListener
 		score = 0; 
 		direction = "";
 
+		//restart timer
+		time.start();
+
 		//redraw the game board
 		repaint();
 	}
@@ -277,7 +290,35 @@ public class Snake extends JPanel implements KeyListener, ActionListener
         f.setVisible(true);
     }
    
+	@Override 
+	public void mousePressed(MouseEvent e) {
+		if (gameover) {
+			//check if the reset button was pressed
+			if(resetButton.contains(e.getPoint())) {
+				resetButton.click(); //run reset
+			}
+		}
+	}
+
+	@Override 
+	public void mouseMoved(MouseEvent e) {
+		//automatically set button hovering states
+		resetButton.setHovering(resetButton.contains(e.getPoint()));
+
+		// redraw the gameboard so hovering animation can commence
+		repaint();
+	}
+
     //unused keyEvent Methods
-	 @Override public void keyTyped(KeyEvent e) {}
-	 @Override public void keyReleased(KeyEvent e) {}
+	@Override public void keyTyped(KeyEvent e) {}
+	@Override public void keyReleased(KeyEvent e) {}
+
+	//unused MouseEvent Methods
+	@Override public void mouseClicked(MouseEvent e) {}
+	@Override public void mouseReleased(MouseEvent e) {}
+	@Override public void mouseEntered(MouseEvent e) {}
+	@Override public void mouseExited(MouseEvent e) {}
+
+	 //unused MouseMotionEvent Methods
+	@Override public void mouseDragged(MouseEvent e) {}
 }
