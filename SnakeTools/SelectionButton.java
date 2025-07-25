@@ -4,19 +4,18 @@ package snakeTools;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-/** A button that completes an action when clicked */
-public class ActionButton {
+/** A button that switches between a selected and unselected state when clicked */
+public class SelectionButton {
     // declare global vars 
     public Rectangle bounds;;
     public String label;
-    private Runnable onClick;
     private boolean isHovering = false;
+    private boolean isSelected = false; 
 
     //construct class and take parameters
-    public ActionButton(int x, int y, int width, int height, String label, Runnable onClick) {
+    public SelectionButton(int x, int y, int width, int height, String label) {
         this.bounds = new Rectangle(x, y, width, height);
         this.label = label;
-        this.onClick = onClick;
     }
 
     /** draw the button, must be in paintComponent() method or another with Graphics */
@@ -25,12 +24,21 @@ public class ActionButton {
         g.setFont(font);
         FontMetrics metrics = g.getFontMetrics(font);
         
-        //draw box around button (uses multiple Rects to make thick outline)
-        g.setColor(color); 
-        g.fillRect(bounds.x - (BoxThickness/2), bounds.y - (BoxThickness/2), BoxThickness, bounds.height);
-        g.fillRect(bounds.x - (BoxThickness/2), bounds.y - (BoxThickness/2), bounds.width, BoxThickness);
-        g.fillRect(bounds.x - (BoxThickness/2), bounds.y + bounds.height - (BoxThickness/2), bounds.width + BoxThickness, BoxThickness); 
-        g.fillRect(bounds.x + bounds.width - (BoxThickness/2), bounds.y - (BoxThickness/2), BoxThickness, bounds.height + BoxThickness);
+        //check for selection and draw related object
+        if (!isSelected) {
+            // if its not selected draw box around button (uses multiple Rects to make thick outline)
+            g.setColor(color); 
+            g.fillRect(bounds.x - (BoxThickness/2), bounds.y - (BoxThickness/2), BoxThickness, bounds.height);
+            g.fillRect(bounds.x - (BoxThickness/2), bounds.y - (BoxThickness/2), bounds.width, BoxThickness);
+            g.fillRect(bounds.x - (BoxThickness/2), bounds.y + bounds.height - (BoxThickness/2), bounds.width + BoxThickness, BoxThickness); 
+            g.fillRect(bounds.x + bounds.width - (BoxThickness/2), bounds.y - (BoxThickness/2), BoxThickness, bounds.height + BoxThickness);
+        } else {
+            //if it is selected draw a filled box
+            g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+            
+            // set text color to black
+            g.setColor(Color.BLACK);
+        }
 
         //draw label
         int labelWidth = metrics.stringWidth(label);
@@ -74,12 +82,24 @@ public class ActionButton {
         setHovering(bounds.contains(e.getPoint()));
     }
 
-    public void click() {
-        if (onClick != null) {onClick.run();}
+    public void setSelected(boolean selected) {
+        isSelected = selected; 
     }
 
-    public void smartClick(MouseEvent e) {
-        if (bounds.contains(e.getPoint())) {click();}
+    public void invertSelected() {
+        isSelected = !isSelected;
+    }
+
+    public void smartSetSelected(MouseEvent e, boolean selected) {
+        if (bounds.contains(e.getPoint())) {isSelected = !isSelected;}
+    }
+
+    public void smartInvertSelected(MouseEvent e) {
+        if (bounds.contains(e.getPoint())) {isSelected = !isSelected;}
+    }
+
+    public boolean checkSelected() {
+        return isSelected; 
     }
 }
 

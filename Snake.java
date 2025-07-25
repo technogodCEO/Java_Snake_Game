@@ -296,6 +296,9 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 			//check if the reset button was pressed
 			resetButton.smartClick(e);
 		}
+
+		//redraw the game board (needed for button to update)
+		repaint(); 
 	}
 
 	@Override 
