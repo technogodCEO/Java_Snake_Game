@@ -257,7 +257,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 		}
 	 }
 	 
-	//this method resets the game without having to restart the app
+	/** this method resets the game without having to restart the app */
     private void reset() {
 		gameover = false; //reset gameover variable
 		
