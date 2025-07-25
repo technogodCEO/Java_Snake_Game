@@ -25,6 +25,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 	
    //create global variables
 	int tickspeed = 100; //controls tickspeed
+	int tickspeedIncreaseCounter = 0;
 
 	ArrayList<Integer> x = new ArrayList<Integer>();
 	ArrayList<Integer> y = new ArrayList<Integer>();
@@ -35,12 +36,21 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 	int appley = (int)((30) * Math.random());
 
 	boolean gameover = false;
+	boolean gameNotStarted = true; 
 	
 	String direction = "";
 	int score = 0;
+	String difficulty = "";
 
-	//declare button
+	//declare start and reset button
 	ActionButton resetButton = new ActionButton(300, 430, 140, 60, "Reset", () -> {reset();});
+	ActionButton startButton = new ActionButton(300, 520, 140, 60, "Start", () -> {start();});
+
+	//declare difficulty selectors
+	SelectionButton easyButton = new SelectionButton(140, 400, 140, 60, "Easy"); 
+	SelectionButton normalButton = new SelectionButton(300, 400, 140, 60, "Normal"); 
+	SelectionButton hardButton = new SelectionButton(460, 400, 140, 60, "Hard"); 
+	ButtonSet diffSet = new ButtonSet(null);
 
 	//create fonts
 	Font titleFont = new Font("Monospaced", Font.BOLD, 100);
@@ -65,8 +75,56 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 	    //give initial values to x and y
 	    x.add((int)((35) * Math.random()));
 	    y.add((int)((30) * Math.random()));
+
+		// add difficulty buttons to set
+		diffSet.add(easyButton);
+		diffSet.add(normalButton);
+		diffSet.add(hardButton);
+		normalButton.isSelected = true;
 	}
 	
+	public void start() {
+		//allow standard gamboard to be drawn
+		gameNotStarted = false; 
+		
+		//assign correct tickspeed
+		if (easyButton.checkSelected()) {
+			tickspeed = 200; 
+			difficulty = "easy";
+		} else if (normalButton.checkSelected()) {
+			difficulty = "normal";
+		} else {
+			difficulty = "hard";
+		}
+
+		//set time speed to new difficulty based speed
+		time.setDelay(tickspeed);
+
+		//redraw game board
+		repaint(); 
+	}
+
+	/** draws the start screen */
+	private void drawStartScreen(Graphics g) {
+		//draw Name:
+		g.setColor(Color.GREEN);
+		g.setFont(titleFont);
+		g.drawString("Snake", 220, 350);
+
+		//draw buttons;
+		startButton.draw(g, selectFont, Color.GREEN, 3);
+		easyButton.draw(g, selectFont, Color.GREEN, 3);
+		normalButton.draw(g, selectFont, Color.GREEN, 3);
+		hardButton.draw(g, selectFont, Color.GREEN, 3);
+	
+		//draw copyright
+		g.setFont(creditFont);
+		g.drawString("Roshan Kareer © 2025, All rights reserved", 390, 785);
+
+		//start timer
+		time.start(); 
+	}
+
 	/** Draws the gameboard while the game is still running**/
 	private void drawGameScreen(Graphics g) {
 		//draw title
@@ -137,13 +195,15 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
         setBackground(Color.BLACK); //set bg to black
 		
         // runs while the game is not over (like a loop)
-		if (!gameover) {
+		if (!gameover && gameNotStarted) {
+			drawStartScreen(g); 
+		} else if (!gameover) {
 			drawGameScreen(g);
 		} else {
 			drawGameOverScreen(g);
 		}
     }
-	
+
 	/** creates a new list of all the squares of the snake each tick to minimize memory usage  */
 	private void newSnakeList() {
 		// add new position node to old list
@@ -202,6 +262,22 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 				gameover = true;
 			}
         }
+
+		// decrement tickspeed 
+		tickspeedIncreaseCounter++;
+		if (difficulty.equals("hard") && tickspeed >= 75) {
+			tickspeed--; 
+			time.setDelay(tickspeed);
+			tickspeedIncreaseCounter = 0;
+		} else if (difficulty.equals("hard") && tickspeed >= 60 && tickspeedIncreaseCounter == 4) {
+			tickspeed--; 
+			time.setDelay(tickspeed);
+			tickspeedIncreaseCounter = 0;
+		} else if (difficulty.equals("hard") && tickspeed >= 40 && tickspeedIncreaseCounter == 9) {
+			tickspeed--; 
+			time.setDelay(tickspeed);
+			tickspeedIncreaseCounter = 0;
+		}
 
 		if (!gameover) {
 			repaint();
@@ -273,9 +349,10 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 		length = 1;
 		score = 0; 
 		direction = "";
+		tickspeed = 100; 
 
-		//restart timer
-		time.start();
+		//set gameNotStarted to true
+		gameNotStarted = true; 
 
 		//redraw the game board
 		repaint();
@@ -292,6 +369,11 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
    
 	@Override 
 	public void mousePressed(MouseEvent e) {
+		if (gameNotStarted) {
+			diffSet.smartSelect(e); 
+			startButton.smartClick(e);
+		}
+		
 		if (gameover) {
 			//check if the reset button was pressed
 			resetButton.smartClick(e);
@@ -304,7 +386,17 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 	@Override 
 	public void mouseMoved(MouseEvent e) {
 		//automatically set button hovering states
-		resetButton.smartSetHovering(e);
+		if (gameNotStarted) {
+			for (SelectionButton b : diffSet.buttons) {
+				b.smartSetHovering(e);
+			}
+
+			startButton.smartSetHovering(e);
+		}
+
+		if (gameover) {
+			resetButton.smartSetHovering(e);
+		}
 
 		// redraw the gameboard so hovering animation can commence
 		repaint();

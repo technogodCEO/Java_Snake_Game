@@ -10,7 +10,7 @@ public class SelectionButton {
     public Rectangle bounds;;
     public String label;
     private boolean isHovering = false;
-    private boolean isSelected = false; 
+    public boolean isSelected = false; 
 
     //construct class and take parameters
     public SelectionButton(int x, int y, int width, int height, String label) {
