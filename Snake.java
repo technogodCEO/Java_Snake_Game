@@ -118,6 +118,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 		hardButton.draw(g, selectFont, Color.GREEN, 3);
 	
 		//draw copyright
+		g.setColor(Color.GREEN);
 		g.setFont(creditFont);
 		g.drawString("Roshan Kareer © 2025, All rights reserved", 390, 785);
 
