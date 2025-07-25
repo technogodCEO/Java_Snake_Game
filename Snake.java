@@ -89,7 +89,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 		
 		//assign correct tickspeed
 		if (easyButton.checkSelected()) {
-			tickspeed = 200; 
+			tickspeed = 160;
 			difficulty = "easy";
 		} else if (normalButton.checkSelected()) {
 			difficulty = "normal";
