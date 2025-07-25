@@ -2,6 +2,7 @@ package snakeTools;
 
 //import packages
 import java.awt.*;
+import java.awt.event.MouseEvent;
 
 public class ActionButton {
     // declare global vars 
@@ -69,8 +70,16 @@ public class ActionButton {
         isHovering = hovering; 
     }
 
+    public void smartSetHovering(MouseEvent e) {
+        setHovering(bounds.contains(e.getPoint()));
+    }
+
     public void click() {
         if (onClick != null) {onClick.run();}
+    }
+
+    public void smartClick(MouseEvent e) {
+        if (bounds.contains(e.getPoint())) {click();}
     }
 }
 

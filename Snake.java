@@ -294,16 +294,14 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 	public void mousePressed(MouseEvent e) {
 		if (gameover) {
 			//check if the reset button was pressed
-			if(resetButton.contains(e.getPoint())) {
-				resetButton.click(); //run reset
-			}
+			resetButton.smartClick(e);
 		}
 	}
 
 	@Override 
 	public void mouseMoved(MouseEvent e) {
 		//automatically set button hovering states
-		resetButton.setHovering(resetButton.contains(e.getPoint()));
+		resetButton.smartSetHovering(e);
 
 		// redraw the gameboard so hovering animation can commence
 		repaint();
