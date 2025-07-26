@@ -51,13 +51,6 @@ public class ActionButton {
                 g.fillRect(bounds.x - (BoxThickness/2), bounds.y - (BoxThickness/2), bounds.width + 1, BoxThickness);
                 g.fillRect(bounds.x - (BoxThickness/2), bounds.y + bounds.height - (BoxThickness/2), bounds.width + BoxThickness, BoxThickness); 
                 g.fillRect(bounds.x + bounds.width - (BoxThickness/2), bounds.y - (BoxThickness/2), BoxThickness, bounds.height + BoxThickness);
-
-                try {
-                    Thread.sleep(15); //this pauses for 15 milliseconds -> the try catch is just red tape mostly 
-                // This function will pause all execution so if this button is used within game with a tick system ticks will not occur during the animation
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }            
         }
     }
