@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 /** A button that switches between a selected and unselected state when clicked */
 public class SelectionButton {
     // declare global vars 
-    public Rectangle bounds;;
+    public Rectangle bounds;
     public String label;
     private boolean isHovering = false;
     public boolean isSelected = false; 
@@ -24,16 +24,19 @@ public class SelectionButton {
         g.setFont(font);
         FontMetrics metrics = g.getFontMetrics(font);
         
-        //check for selection and draw related object
         if (!isSelected) {
+            // compute outline thickness based on hover state (single pass; no loops)
+            int boxThickness = isHovering ? Math.min(BoxThickness + 2, 8) : BoxThickness;
+
             // if its not selected draw box around button (uses multiple Rects to make thick outline)
             g.setColor(color); 
-            g.fillRect(bounds.x - (BoxThickness/2), bounds.y - (BoxThickness/2), BoxThickness, bounds.height);
-            g.fillRect(bounds.x - (BoxThickness/2), bounds.y - (BoxThickness/2), bounds.width, BoxThickness);
-            g.fillRect(bounds.x - (BoxThickness/2), bounds.y + bounds.height - (BoxThickness/2), bounds.width + BoxThickness, BoxThickness); 
-            g.fillRect(bounds.x + bounds.width - (BoxThickness/2), bounds.y - (BoxThickness/2), BoxThickness, bounds.height + BoxThickness);
+            g.fillRect(bounds.x - (boxThickness/2), bounds.y - (boxThickness/2), boxThickness, bounds.height);
+            g.fillRect(bounds.x - (boxThickness/2), bounds.y - (boxThickness/2), bounds.width, boxThickness);
+            g.fillRect(bounds.x - (boxThickness/2), bounds.y + bounds.height - (boxThickness/2), bounds.width + boxThickness, boxThickness); 
+            g.fillRect(bounds.x + bounds.width - (boxThickness/2), bounds.y - (boxThickness/2), boxThickness, bounds.height + boxThickness);
         } else {
             //if it is selected draw a filled box
+            g.setColor(color);
             g.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
             
             // set text color to black
@@ -46,21 +49,6 @@ public class SelectionButton {
         int labelX = bounds.x + (bounds.width - labelWidth)/2;
         int labelY = bounds.y + (bounds.height - labelHeight)/2 + metrics.getAscent();
         g.drawString(label, labelX, labelY);
-        
-        //draw hovering animation
-        if (isHovering) {
-            // this is the animation loop
-            while (BoxThickness < 8) {
-
-                BoxThickness += 2; //iterate length
-
-                // redraw box outline with new size (no need to set color bc already set)
-                g.fillRect(bounds.x - (BoxThickness/2), bounds.y - (BoxThickness/2), BoxThickness, bounds.height);
-                g.fillRect(bounds.x - (BoxThickness/2), bounds.y - (BoxThickness/2), bounds.width + 1, BoxThickness);
-                g.fillRect(bounds.x - (BoxThickness/2), bounds.y + bounds.height - (BoxThickness/2), bounds.width + BoxThickness, BoxThickness); 
-                g.fillRect(bounds.x + bounds.width - (BoxThickness/2), bounds.y - (BoxThickness/2), BoxThickness, bounds.height + BoxThickness);
-            }            
-        }
     }
 
     public boolean contains(Point p) {
@@ -84,7 +72,7 @@ public class SelectionButton {
     }
 
     public void smartSetSelected(MouseEvent e, boolean selected) {
-        if (bounds.contains(e.getPoint())) {isSelected = !isSelected;}
+        if (bounds.contains(e.getPoint())) {isSelected = selected;}
     }
 
     public void smartInvertSelected(MouseEvent e) {

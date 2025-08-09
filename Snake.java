@@ -38,7 +38,8 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 	boolean gameover = false;
 	boolean gameNotStarted = true; 
 	
-	String direction = "";
+	private enum Direction { UP, DOWN, LEFT, RIGHT, NONE }
+	Direction direction = Direction.NONE;
 	int score = 0;
 	String difficulty = "";
 
@@ -97,11 +98,14 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 			difficulty = "hard";
 		}
 
-		//set time speed to new difficulty based speed
+				//set time speed to new difficulty based speed
 		time.setDelay(tickspeed);
-
+		
+		// start the game timer
+		time.start();
+		
 		//redraw game board
-		repaint(); 
+		repaint();  
 	}
 
 	/** draws the start screen */
@@ -122,8 +126,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 		g.setFont(creditFont);
 		g.drawString("Roshan Kareer © 2025, All rights reserved", 390, 785);
 
-		//start timer
-		time.start(); 
+
 	}
 
 	/** Draws the gameboard while the game is still running**/
@@ -165,8 +168,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 			g.fillRect((x.get(i)*20) + 20, (y.get(i)*20) + 140, 20, 20);
 		}
 	
-		//run time event to wait until next step
-		time.start();
+
 	}
 
 	/** Draws the loss screen */
@@ -211,16 +213,16 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 		int currx = x.get(x.size() - 1);
 		int curry = y.get(y.size() - 1); //these two are the current heads
 	
-		if (direction.equals("right")) {
+		if (direction == Direction.RIGHT) {
 			x.add(currx + 1);
 			y.add(curry);
-		} else if (direction.equals("up")) {
+		} else if (direction == Direction.UP) {
 			y.add(curry - 1);
 			x.add(currx);
-		} else if (direction.equals("left")) {
+		} else if (direction == Direction.LEFT) {
 			x.add(currx - 1);
 			y.add(curry);
-		} else if (direction.equals("down")) {
+		} else if (direction == Direction.DOWN) {
 			y.add(curry + 1);
 			x.add(currx);
 		}
@@ -314,15 +316,15 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 			// if the game isn't over, then whenever a key is pressed assign the correct direction based on the key pressed
 			// the && direction part makes it so you don't instantly kill yourself if you press the button in the opposite direction of movement. 
 			// () are needed around the different key options as &&nds execute before ||rs.
-			if ((e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) && direction != "down") { 
-				direction = "up";
-		 	} else if ((e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT ) && direction != "right") {
-			 	direction = "left"; // A or left is left
-		 	} else if ((e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) && direction != "up") {
-			 	direction = "down"; // S or down is down
-		 	} else if ((e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) && direction != "left") {
-			 	direction = "right"; // D or right is right
-		 	}
+						if ((e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_UP) && direction != Direction.DOWN) { 
+				direction = Direction.UP;
+			 } else if ((e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT ) && direction != Direction.RIGHT) {
+			 	direction = Direction.LEFT; // A or left is left
+			 } else if ((e.getKeyCode() == KeyEvent.VK_S || e.getKeyCode() == KeyEvent.VK_DOWN) && direction != Direction.UP) {
+			 	direction = Direction.DOWN; // S or down is down
+			 } else if ((e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT) && direction != Direction.LEFT) {
+			 	direction = Direction.RIGHT; // D or right is right
+			 }
 		} 
 		 
 		else // if the game is over
@@ -349,7 +351,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 		//reset length, score, and direction to starting variables
 		length = 1;
 		score = 0; 
-		direction = "";
+		direction = Direction.NONE;
 		tickspeed = 100; 
 
 		//set gameNotStarted to true
