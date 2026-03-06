@@ -1,7 +1,7 @@
 //import packages for graphics
 import java.awt.*;
 import javax.swing.*;
-import snakeTools.*; /* my package */
+import snakeTools.*; /* my package available at https://github.com/technogodCEO/snakeTools */ 
 
 //import event package
 import java.awt.event.*;
@@ -62,7 +62,7 @@ public class Snake extends JPanel implements KeyListener, ActionListener, MouseL
 	Timer time = new Timer(tickspeed, this);
 	
 	//__init__ Keyboard Listener
-	public Snake() {
+	public Snake() { 
 		//this allows for keyboard inputs to work
 		addKeyListener(this);
 		setFocusable(true);

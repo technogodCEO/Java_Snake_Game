@@ -11,7 +11,7 @@ public class ButtonSet {
         this.buttons = (buttons != null) ? buttons : new ArrayList<>();
     }
 
-    public void add(SelectionButton button) {
+    public void add(SelectionButton button) {  
         buttons.add(button);
     }
 
